@@ -1,3 +1,4 @@
+import base64
 from io import BytesIO
 import os
 import time
@@ -88,8 +89,11 @@ class Url2ImageHandler(RequestHandler):
         data: dict = tornado.escape.json_decode(self.request.body)
         url: str = data['url']
         crop: bool = data.get('crop', True)
+        return_base64: bool = data.get('returnBase64', False)
         image_content = self.application.driver.url_2_image_content(url, crop)
-        self.set_header('Content-Type', 'image/png')
+        # self.set_header('Content-Type', 'image/png')
+        if return_base64:
+            image_content = 'data:image/png;base64,' + base64.b64encode(image_content).decode()
         self.write(image_content)
 
 
@@ -98,13 +102,16 @@ class Html2ImageHandler(RequestHandler):
         data: dict = tornado.escape.json_decode(self.request.body)
         html_str: str = data['html']
         crop: bool = data.get('crop', True)
+        return_base64: bool = data.get('returnBase64', False)
         html_file_name = f'{int(time.time() * 1000)}-{uuid.uuid4()}.html'
         html_file_abspath = os.path.join(HTML_SAVE_DIR, html_file_name)
         with open(html_file_abspath, 'w', encoding='utf8') as f:
             f.write(html_str)
         file_url = f'file://{html_file_abspath}'
         image_content = self.application.driver.url_2_image_content(file_url, crop)
-        self.set_header('Content-Type', 'image/png')
+        # self.set_header('Content-Type', 'image/png')
+        if return_base64:
+            image_content = 'data:image/png;base64,' + base64.b64encode(image_content).decode()
         self.write(image_content)
 
 

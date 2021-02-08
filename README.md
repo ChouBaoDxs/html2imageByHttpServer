@@ -26,7 +26,8 @@ Python3 + Selenium + Tornado 实现将 url 或者 html 转成图片
     # url 转图片
     json_data = {
         'url': 'https://www.baidu.com/',
-        'crop': False  # 是否要裁剪空白区域
+        'crop': False,  # 是否要裁剪空白区域
+        'returnBase64': True  # 是否返回 base64 字符串，默认是 False
     }
     res = requests.post('http://127.0.0.1:8888/url2image', json=json_data)
     print(res.content)
@@ -34,7 +35,8 @@ Python3 + Selenium + Tornado 实现将 url 或者 html 转成图片
     # html 字符串转图片
     json_data = {
         'html': '<div style="background: green;width: 200px;height: 200px"></div>',
-        'crop': True  # 是否要裁剪空白区域
+        'crop': True,  # 是否要裁剪空白区域
+        'returnBase64': True  # 是否返回 base64 字符串，默认是 False
     }
     res = requests.post('http://127.0.0.1:8888/html2image', json=json_data)
     print(res.content)
